@@ -1,0 +1,2 @@
+include ':app', ':mediarecyclerview'
+rootProject.name='MediaRecyclerView Sample'
