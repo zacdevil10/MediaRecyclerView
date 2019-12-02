@@ -82,6 +82,18 @@ class MainActivity : AppCompatActivity() {
                     MediaType.IMAGE
                 )
             )
+            add(
+                MediaModel(
+                    "https://pbs.twimg.com/media/EKVaD0yU4AAttZz.jpg",
+                    MediaType.IMAGE
+                )
+            )
+            add(
+                MediaModel(
+                    "https://pbs.twimg.com/media/EKVaD0vUEAIjeXx.jpg",
+                    MediaType.IMAGE
+                )
+            )
         }
 
         media.add(SampleModel(1, sampleMedia1))

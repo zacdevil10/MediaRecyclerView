@@ -14,6 +14,7 @@ import uk.co.zac_h.mediarecyclerview.R
 import uk.co.zac_h.mediarecyclerview.models.MediaModel
 import uk.co.zac_h.mediarecyclerview.ui.PhotoView
 import uk.co.zac_h.mediarecyclerview.utils.MediaType
+import kotlin.math.min
 import kotlin.math.roundToInt
 
 class MediaRecyclerAdapter(
@@ -91,7 +92,7 @@ class MediaRecyclerAdapter(
 
                     when (position) {
                         0 -> {
-                            if (media.size == 4) {
+                            if (media.size >= 4) {
                                 image.layoutParams.height = defaultHeight / 2
                                 (image.layoutParams as StaggeredGridLayoutManager.LayoutParams).bottomMargin =
                                     8
@@ -122,7 +123,7 @@ class MediaRecyclerAdapter(
                                     8
                                 (image.layoutParams as StaggeredGridLayoutManager.LayoutParams).topMargin =
                                     8
-                            } else if (media.size == 4) {
+                            } else if (media.size >= 4) {
                                 (image.layoutParams as StaggeredGridLayoutManager.LayoutParams).marginEnd =
                                     8
                                 (image.layoutParams as StaggeredGridLayoutManager.LayoutParams).topMargin =
@@ -145,7 +146,7 @@ class MediaRecyclerAdapter(
         }
     }
 
-    override fun getItemCount(): Int = media.size
+    override fun getItemCount(): Int = min(media.size, 4)
 
     override fun getItemViewType(position: Int): Int =
         when (media[position].type) {
