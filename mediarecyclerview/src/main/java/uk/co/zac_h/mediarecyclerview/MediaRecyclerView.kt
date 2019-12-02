@@ -16,7 +16,12 @@ class MediaRecyclerView : RecyclerView {
 
     fun configure(context: Context?, media: ArrayList<String>) {
         layoutManager = StaggeredGridLayoutManager(min(media.size, 2), StaggeredGridLayoutManager.VERTICAL)
-        adapter = MediaRecyclerAdapter.setMedia(media).setHeight(196).build(context)
+        adapter = MediaRecyclerAdapter.setMedia(media).build(context)
+    }
+
+    fun configure(context: Context?, height: Int, media: ArrayList<String>) {
+        layoutManager = StaggeredGridLayoutManager(min(media.size, 2), StaggeredGridLayoutManager.VERTICAL)
+        adapter = MediaRecyclerAdapter.setMedia(media).setHeight(height).build(context)
     }
 
 }
