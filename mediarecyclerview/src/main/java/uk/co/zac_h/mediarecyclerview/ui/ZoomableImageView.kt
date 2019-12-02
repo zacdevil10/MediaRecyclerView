@@ -1,4 +1,4 @@
-package uk.co.zac_h.mediarecyclerview
+package uk.co.zac_h.mediarecyclerview.ui
 
 import android.content.Context
 import android.util.AttributeSet

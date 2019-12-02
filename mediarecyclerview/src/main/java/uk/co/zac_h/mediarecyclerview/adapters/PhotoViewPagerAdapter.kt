@@ -1,4 +1,4 @@
-package uk.co.zac_h.mediarecyclerview
+package uk.co.zac_h.mediarecyclerview.adapters
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -7,8 +7,13 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.viewpager.widget.PagerAdapter
 import com.squareup.picasso.Picasso
+import uk.co.zac_h.mediarecyclerview.R
+import uk.co.zac_h.mediarecyclerview.models.MediaModel
 
-class PhotoViewPagerAdapter(private val context: Context, private val media: ArrayList<String>?) :
+class PhotoViewPagerAdapter(
+    private val context: Context,
+    private val media: ArrayList<MediaModel>?
+) :
     PagerAdapter() {
 
     override fun instantiateItem(container: ViewGroup, position: Int): Any {
@@ -36,7 +41,7 @@ class PhotoViewPagerAdapter(private val context: Context, private val media: Arr
 
     override fun getCount(): Int = media?.size ?: 0
 
-    private fun getImageUrlAt(position: Int): String = media?.get(position) as String
+    private fun getImageUrlAt(position: Int): String = media?.get(position)?.url as String
 
     private fun getImageResourceAt(position: Int): Int = media?.get(position) as Int
 
@@ -51,8 +56,11 @@ class PhotoViewPagerAdapter(private val context: Context, private val media: Arr
             return this
         }
 
-        fun build(context: Context, media: java.util.ArrayList<String>?): PagerAdapter =
-            PhotoViewPagerAdapter(context, media)
+        fun build(context: Context, media: java.util.ArrayList<MediaModel>?): PagerAdapter =
+            PhotoViewPagerAdapter(
+                context,
+                media
+            )
     }
 
 }

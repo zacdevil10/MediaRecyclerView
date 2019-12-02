@@ -5,7 +5,8 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application>
-        <activity android:name=".PhotoView"
+        <activity
+            android:name=".ui.PhotoView"
             android:theme="@style/PhotoViewTheme"/>
     </application>
 

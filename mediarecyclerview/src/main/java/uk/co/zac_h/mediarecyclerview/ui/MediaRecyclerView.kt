@@ -1,9 +1,11 @@
-package uk.co.zac_h.mediarecyclerview
+package uk.co.zac_h.mediarecyclerview.ui
 
 import android.content.Context
 import android.util.AttributeSet
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import uk.co.zac_h.mediarecyclerview.adapters.MediaRecyclerAdapter
+import uk.co.zac_h.mediarecyclerview.models.MediaModel
 import kotlin.math.min
 
 class MediaRecyclerView : RecyclerView {
@@ -14,12 +16,12 @@ class MediaRecyclerView : RecyclerView {
 
     constructor(context: Context, attrs: AttributeSet, defStyle: Int) : super(context, attrs, defStyle)
 
-    fun configure(context: Context?, media: ArrayList<String>) {
+    fun configure(context: Context?, media: ArrayList<MediaModel>) {
         layoutManager = StaggeredGridLayoutManager(min(media.size, 2), StaggeredGridLayoutManager.VERTICAL)
         adapter = MediaRecyclerAdapter.setMedia(media).build(context)
     }
 
-    fun configure(context: Context?, height: Int, media: ArrayList<String>) {
+    fun configure(context: Context?, height: Int, media: ArrayList<MediaModel>) {
         layoutManager = StaggeredGridLayoutManager(min(media.size, 2), StaggeredGridLayoutManager.VERTICAL)
         adapter = MediaRecyclerAdapter.setMedia(media).setHeight(height).build(context)
     }

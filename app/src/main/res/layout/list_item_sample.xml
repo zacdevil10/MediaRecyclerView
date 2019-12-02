@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         tools:text="1"/>
 
-    <uk.co.zac_h.mediarecyclerview.MediaRecyclerView
+    <uk.co.zac_h.mediarecyclerview.ui.MediaRecyclerView
         android:id="@+id/media_recycler"
         android:layout_width="match_parent"
         android:layout_height="200dp" />
