@@ -23,7 +23,7 @@ Add MediaRecyclerView as your would a standard View in Android. Currently the he
 <uk.co.zac_h.mediarecyclerview.ui.MediaRecyclerView
     android:id="@+id/media_recycler_view"
     android:layout_width="match_parent"
-    android:layout_height="196dp" />
+    android:layout_height="wrap_content" />
 ```
 
 ```kotlin
@@ -31,10 +31,15 @@ val mediaRecyclerView: MediaRecyclerView = findViewById(R.id.media_recycler_view
 
 //Add as many media models to an array as you want. Only the first 4 will be shown but the rest can be seen in the photo viewer.
 //NOTE: In the latest version using MediaType.VIDEO will not show anything but this will be implemented in a future release.
-val media = MediaModel(url, MediaType.IMAGE || MediaType.VIDEO)
+val mediaImage = MediaModel(mediaUrl, MediaType.IMAGE)
+val mediaVideo = MediaModel(mediaUrl, MediaType.VIDEO, staticImageUrl)
 
-//MediaRecyclerView accepts image urls as ArrayList<MediaModel> and will currently display no more than 4 images.
+//MediaRecyclerView accepts image urls as ArrayList<MediaModel>.
 mediaRecyclerView.configure(context, media)
-//or if you change the height of the MediaRecyclerView
-mediaRecyclerView.configure(context, height in dp, media)
+//or if you change the height and margin of the MediaRecyclerView
+mediaRecyclerView.apply {
+    height(height in dp)
+    setMargin(margin in px)
+    configure(context, media)
+}
 ```
