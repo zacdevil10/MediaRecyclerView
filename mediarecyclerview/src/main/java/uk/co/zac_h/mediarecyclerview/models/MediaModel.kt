@@ -6,5 +6,6 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 data class MediaModel(
     val url: String,
-    val type: Int
+    val type: Int,
+    val static: String = ""
 ) : Parcelable

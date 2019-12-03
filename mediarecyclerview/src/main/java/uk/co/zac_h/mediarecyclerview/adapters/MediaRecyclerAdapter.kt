@@ -6,13 +6,16 @@ import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.squareup.picasso.Picasso
 import uk.co.zac_h.mediarecyclerview.R
 import uk.co.zac_h.mediarecyclerview.models.MediaModel
 import uk.co.zac_h.mediarecyclerview.ui.PhotoView
+import uk.co.zac_h.mediarecyclerview.ui.VideoView
 import uk.co.zac_h.mediarecyclerview.utils.MediaType
 import kotlin.math.min
 import kotlin.math.roundToInt
@@ -25,12 +28,19 @@ class MediaRecyclerAdapter(
 
     companion object Builder {
         private const val DEFAULT_HEIGHT = 196
+        private const val DEFAULT_MARGIN = 4
 
         private lateinit var media: ArrayList<MediaModel>
         private var height: Int? = null
+        private var margin: Int? = null
 
-        fun setHeight(height: Int): Builder {
+        fun setHeight(height: Int?): Builder {
             Builder.height = height
+            return this
+        }
+
+        fun setMargin(margin: Int?): Builder {
+            Builder.margin = margin
             return this
         }
 
@@ -61,7 +71,7 @@ class MediaRecyclerAdapter(
             MediaType.VIDEO -> {
                 VideoViewHolder(
                     LayoutInflater.from(parent.context).inflate(
-                        R.layout.list_item_image,
+                        R.layout.list_item_video,
                         parent,
                         false
                     )
@@ -75,7 +85,7 @@ class MediaRecyclerAdapter(
 
         when (holder) {
             is ImageViewHolder -> holder.apply {
-                image.setOnClickListener {
+                container.setOnClickListener {
                     context?.startActivity(Intent(context, PhotoView::class.java).apply {
                         putExtra("position", position)
                         putParcelableArrayListExtra("media", media)
@@ -90,58 +100,74 @@ class MediaRecyclerAdapter(
                         ((height
                             ?: DEFAULT_HEIGHT) * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT)).roundToInt()
 
+                    container.layoutParams.height = defaultHeight
+
                     when (position) {
                         0 -> {
                             if (media.size >= 4) {
-                                image.layoutParams.height = defaultHeight / 2
-                                (image.layoutParams as StaggeredGridLayoutManager.LayoutParams).bottomMargin =
-                                    8
+                                container.layoutParams.height = defaultHeight / 2
+                                (container.layoutParams as StaggeredGridLayoutManager.LayoutParams).bottomMargin =
+                                    margin ?: DEFAULT_MARGIN
                             }
                             if (media.size > 1) {
-                                (image.layoutParams as StaggeredGridLayoutManager.LayoutParams).marginEnd =
-                                    8
+                                (container.layoutParams as StaggeredGridLayoutManager.LayoutParams).marginEnd =
+                                    margin ?: DEFAULT_MARGIN
                             }
                         }
                         1 -> {
                             if (media.size > 2) {
-                                image.layoutParams.height = defaultHeight / 2
-                                (image.layoutParams as StaggeredGridLayoutManager.LayoutParams).bottomMargin =
-                                    8
+                                container.layoutParams.height = defaultHeight / 2
+                                (container.layoutParams as StaggeredGridLayoutManager.LayoutParams).bottomMargin =
+                                    margin ?: DEFAULT_MARGIN
 
                             }
                             if (media.size > 1) {
-                                (image.layoutParams as StaggeredGridLayoutManager.LayoutParams).marginStart =
-                                    8
+                                (container.layoutParams as StaggeredGridLayoutManager.LayoutParams).marginStart =
+                                    margin ?: DEFAULT_MARGIN
                             }
                         }
                         2 -> {
                             if (media.size > 2) {
-                                image.layoutParams.height = defaultHeight / 2
+                                container.layoutParams.height = defaultHeight / 2
                             }
                             if (media.size == 3) {
-                                (image.layoutParams as StaggeredGridLayoutManager.LayoutParams).marginStart =
-                                    8
-                                (image.layoutParams as StaggeredGridLayoutManager.LayoutParams).topMargin =
-                                    8
+                                (container.layoutParams as StaggeredGridLayoutManager.LayoutParams).marginStart =
+                                    margin ?: DEFAULT_MARGIN
+                                (container.layoutParams as StaggeredGridLayoutManager.LayoutParams).topMargin =
+                                    margin ?: DEFAULT_MARGIN
                             } else if (media.size >= 4) {
-                                (image.layoutParams as StaggeredGridLayoutManager.LayoutParams).marginEnd =
-                                    8
-                                (image.layoutParams as StaggeredGridLayoutManager.LayoutParams).topMargin =
-                                    8
+                                (container.layoutParams as StaggeredGridLayoutManager.LayoutParams).marginEnd =
+                                    margin ?: DEFAULT_MARGIN
+                                (container.layoutParams as StaggeredGridLayoutManager.LayoutParams).topMargin =
+                                    margin ?: DEFAULT_MARGIN
                             }
                         }
                         3 -> {
                             if (media.size > 3) {
-                                image.layoutParams.height = defaultHeight / 2
-                                (image.layoutParams as StaggeredGridLayoutManager.LayoutParams).marginStart =
-                                    8
-                                (image.layoutParams as StaggeredGridLayoutManager.LayoutParams).topMargin =
-                                    8
+                                container.layoutParams.height = defaultHeight / 2
+                                (container.layoutParams as StaggeredGridLayoutManager.LayoutParams).marginStart =
+                                    margin ?: DEFAULT_MARGIN
+                                (container.layoutParams as StaggeredGridLayoutManager.LayoutParams).topMargin =
+                                    margin ?: DEFAULT_MARGIN
+                            }
+                            if (media.size > 4) {
+                                countContainer.visibility = View.VISIBLE
+                                countText.text = "+${media.size - 3}"
+                            } else {
+                                countContainer.visibility = View.GONE
                             }
                         }
                     }
 
                 }
+            }
+            is VideoViewHolder -> holder.apply {
+                image.setOnClickListener {
+                    context?.startActivity(Intent(context, VideoView::class.java).apply {
+                        putExtra("media", item.url)
+                    })
+                }
+                Picasso.get().load(item.static).into(image)
             }
         }
     }
@@ -156,10 +182,14 @@ class MediaRecyclerAdapter(
         }
 
     class ImageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val container: FrameLayout = itemView.findViewById(R.id.media_container)
         val image: ImageView = itemView.findViewById(R.id.media_image)
+
+        val countContainer: FrameLayout = itemView.findViewById(R.id.media_count_container)
+        val countText: TextView = itemView.findViewById(R.id.extra_count)
     }
 
     class VideoViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-
+        val image: ImageView = itemView.findViewById(R.id.video_still_image)
     }
 }
