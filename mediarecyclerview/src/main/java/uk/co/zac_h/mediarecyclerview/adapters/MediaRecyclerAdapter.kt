@@ -162,12 +162,12 @@ class MediaRecyclerAdapter(
                 }
             }
             is VideoViewHolder -> holder.apply {
-                image.setOnClickListener {
+                videoStill.setOnClickListener {
                     context?.startActivity(Intent(context, VideoView::class.java).apply {
                         putExtra("media", item.url)
                     })
                 }
-                Picasso.get().load(item.static).into(image)
+                Picasso.get().load(item.static).into(videoStill)
             }
         }
     }
@@ -190,6 +190,6 @@ class MediaRecyclerAdapter(
     }
 
     class VideoViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val image: ImageView = itemView.findViewById(R.id.video_still_image)
+        val videoStill: ImageView = itemView.findViewById(R.id.video_still_image)
     }
 }
