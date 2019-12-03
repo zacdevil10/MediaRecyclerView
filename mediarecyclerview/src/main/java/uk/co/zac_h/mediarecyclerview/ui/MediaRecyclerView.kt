@@ -10,20 +10,32 @@ import kotlin.math.min
 
 class MediaRecyclerView : RecyclerView {
 
+    private var height: Int? = null
+    private var margin: Int? = null
+
     constructor(context: Context) : super(context)
 
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
 
-    constructor(context: Context, attrs: AttributeSet, defStyle: Int) : super(context, attrs, defStyle)
+    constructor(context: Context, attrs: AttributeSet, defStyle: Int) : super(
+        context,
+        attrs,
+        defStyle
+    )
 
     fun configure(context: Context?, media: ArrayList<MediaModel>) {
-        layoutManager = StaggeredGridLayoutManager(min(media.size, 2), StaggeredGridLayoutManager.VERTICAL)
-        adapter = MediaRecyclerAdapter.setMedia(media).build(context)
+        layoutManager =
+            StaggeredGridLayoutManager(min(media.size, 2), StaggeredGridLayoutManager.VERTICAL)
+        adapter =
+            MediaRecyclerAdapter.setMedia(media).setHeight(height).setMargin(margin).build(context)
     }
 
-    fun configure(context: Context?, height: Int, media: ArrayList<MediaModel>) {
-        layoutManager = StaggeredGridLayoutManager(min(media.size, 2), StaggeredGridLayoutManager.VERTICAL)
-        adapter = MediaRecyclerAdapter.setMedia(media).setHeight(height).build(context)
+    fun height(height: Int) {
+        this.height = height
+    }
+
+    fun setMargin(margin: Int) {
+        this.margin = margin
     }
 
 }

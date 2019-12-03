@@ -26,7 +26,11 @@ class SampleAdapter(private val context: Context?, private val media: ArrayList<
         holder.apply {
             textView.text = item.itemNumber.toString()
 
-            recycler.configure(context, item.itemUrl)
+            recycler.apply {
+                height(200)
+                setMargin(4)
+                configure(context, item.itemUrl)
+            }
         }
     }
 
