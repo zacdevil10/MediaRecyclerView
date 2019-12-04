@@ -7,7 +7,7 @@
     <application>
         <activity
             android:name=".ui.VideoView"
-            android:theme="@style/PhotoViewTheme" />
+            android:theme="@style/VideoViewTheme" />
         <activity
             android:name=".ui.PhotoView"
             android:theme="@style/PhotoViewTheme" />

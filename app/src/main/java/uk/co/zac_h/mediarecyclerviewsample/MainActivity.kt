@@ -18,7 +18,7 @@ class MainActivity : AppCompatActivity() {
         val sampleMedia1 = ArrayList<MediaModel>().apply {
             add(
                 MediaModel(
-                    "https://video.twimg.com/amplify_video/1193921139484921856/vid/640x360/IFdi4x-tFrgV6fAf.mp4?tag=13",
+                    "https://video.twimg.com/amplify_video/1193921139484921856/vid/1280x720/0XhYJV_fmAWxptTd.mp4?tag=13",
                     MediaType.VIDEO,
                     "https://pbs.twimg.com/amplify_video_thumb/1193921139484921856/img/xbj5UQlr5dahZUgQ.jpg"
                 )
