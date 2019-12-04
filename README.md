@@ -43,3 +43,12 @@ mediaRecyclerView.apply {
     configure(context, media)
 }
 ```
+
+If using the video playback functionality of this library you will need to add the following to your apps build.gradle file:
+```groovy
+android {
+    [...]
+    compileOptions {
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
