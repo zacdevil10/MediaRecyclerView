@@ -10,12 +10,11 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
-
     defaultConfig {
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 210000106
-        versionName "0.1.6"
+        versionCode 210000107
+        versionName "0.1.7"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles 'consumer-rules.pro'
