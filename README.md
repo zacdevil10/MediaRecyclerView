@@ -1,7 +1,7 @@
 # MediaRecyclerView
 [![](https://jitpack.io/v/zacdevil10/MediaRecyclerView.svg)](https://jitpack.io/#zacdevil10/MediaRecyclerView)
 
-<img src="/assets/sample.png" width="512">
+<img src="/assets/sample-images.png" width="400">   <img src="/assets/sample-video.png" width="400">
 
 A dynamic image grid for displaying upto 4 images.
 
