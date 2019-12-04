@@ -7,6 +7,7 @@ import com.google.android.exoplayer2.ExoPlayerFactory
 import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.source.MediaSource
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
+import com.google.android.exoplayer2.upstream.DataSource
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.util.Util
 import kotlinx.android.synthetic.main.activity_video_view.*
@@ -18,6 +19,7 @@ class VideoView : AppCompatActivity() {
 
     private var player: SimpleExoPlayer? = null
 
+    private var playWhenReady = true
     private var playbackPosition: Long = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -25,6 +27,11 @@ class VideoView : AppCompatActivity() {
         setContentView(R.layout.activity_video_view)
 
         media = intent.extras?.getString("media")
+
+        if (savedInstanceState != null) {
+            playbackPosition = savedInstanceState.getLong("playback_position")
+            playWhenReady = savedInstanceState.getBoolean("play_when_ready")
+        }
     }
 
     override fun onStart() {
@@ -35,6 +42,12 @@ class VideoView : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         if ((Util.SDK_INT < 24 || player == null)) initPlayer()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putLong("playback_position", playbackPosition)
+        outState.putBoolean("play_when_ready", playWhenReady)
+        super.onSaveInstanceState(outState)
     }
 
     override fun onPause() {
@@ -52,17 +65,18 @@ class VideoView : AppCompatActivity() {
         video_view.player = player
 
         val uri = Uri.parse(media)
-        val mediaSource = buildMediaSource(uri)
+        val mediaSource: MediaSource = buildMediaSource(uri)
 
         player?.apply {
-            playWhenReady = true
-            seekTo(playbackPosition)
+            playWhenReady = this@VideoView.playWhenReady
             prepare(mediaSource)
+            seekTo(playbackPosition)
         }
     }
 
     private fun releasePlayer() {
         player?.let {
+            playWhenReady = it.playWhenReady
             playbackPosition = it.currentPosition
             it.release()
             player = null
@@ -70,7 +84,8 @@ class VideoView : AppCompatActivity() {
     }
 
     private fun buildMediaSource(uri: Uri): MediaSource {
-        val dataSourceFactory = DefaultDataSourceFactory(this, "exoplayer-codelab")
+        val dataSourceFactory: DataSource.Factory =
+            DefaultDataSourceFactory(this, "MediaRecyclerView")
         return ProgressiveMediaSource.Factory(dataSourceFactory).createMediaSource(uri)
     }
 }
