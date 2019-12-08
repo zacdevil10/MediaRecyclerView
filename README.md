@@ -38,8 +38,7 @@ val mediaVideo = MediaModel(mediaUrl, MediaType.VIDEO, staticImageUrl)
 mediaRecyclerView.configure(context, media)
 //or if you change the height and margin of the MediaRecyclerView
 mediaRecyclerView.apply {
-    height(height in dp)
-    setMargin(margin in px)
+    setMargin(margin in px and defaults to 4px if not set)
     configure(context, media)
 }
 ```
