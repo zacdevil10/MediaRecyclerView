@@ -2,15 +2,15 @@ package uk.co.zac_h.mediarecyclerview.ui
 
 import android.content.Context
 import android.util.AttributeSet
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import uk.co.zac_h.mediarecyclerview.adapters.MediaRecyclerAdapter
 import uk.co.zac_h.mediarecyclerview.models.MediaModel
+import kotlin.math.max
 import kotlin.math.min
 
 class MediaRecyclerView : RecyclerView {
 
-    private var height: Int? = null
     private var margin: Int? = null
 
     constructor(context: Context) : super(context)
@@ -24,14 +24,17 @@ class MediaRecyclerView : RecyclerView {
     )
 
     fun configure(context: Context?, media: ArrayList<MediaModel>) {
+        val mediaAdapter = MediaRecyclerAdapter.setMedia(media).setMargin(margin).build(context)
         layoutManager =
-            StaggeredGridLayoutManager(min(media.size, 2), StaggeredGridLayoutManager.VERTICAL)
-        adapter =
-            MediaRecyclerAdapter.setMedia(media).setHeight(height).setMargin(margin).build(context)
-    }
-
-    fun height(height: Int) {
-        this.height = height
+            GridLayoutManager(
+                context,
+                min(max(media.size, 1), 2),
+                GridLayoutManager.VERTICAL,
+                false
+            ).apply {
+                spanSizeLookup = mediaAdapter.spanSizeLookup
+            }
+        adapter = mediaAdapter
     }
 
     fun setMargin(margin: Int) {
