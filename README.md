@@ -34,9 +34,9 @@ val mediaRecyclerView: MediaRecyclerView = findViewById(R.id.media_recycler_view
 val mediaImage = MediaModel(mediaUrl, MediaType.IMAGE)
 val mediaVideo = MediaModel(mediaUrl, MediaType.VIDEO, staticImageUrl)
 
-//MediaRecyclerView accepts image urls as ArrayList<MediaModel>.
+//MediaRecyclerView accepts media as ArrayList<MediaModel>.
 mediaRecyclerView.configure(context, media)
-//or if you change the height and margin of the MediaRecyclerView
+//or if you change the margin of the MediaRecyclerView
 mediaRecyclerView.apply {
     setMargin(margin in px and defaults to 4px if not set)
     configure(context, media)
@@ -51,3 +51,4 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 }
+```
