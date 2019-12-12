@@ -97,8 +97,32 @@ class MediaRecyclerAdapter(
                 }
 
                 Picasso.get().load(item.url).into(image)
+
                 when (position) {
                     0 -> {
+                        when (media.size) {
+                            3 -> {
+                                ConstraintSet().apply {
+                                    clone(container)
+                                    setDimensionRatio(image.id, "16:5")
+                                    applyTo(container)
+                                }
+                            }
+                            2 -> {
+                                ConstraintSet().apply {
+                                    clone(container)
+                                    setDimensionRatio(image.id, "8:11")
+                                    applyTo(container)
+                                }
+                            }
+                            else -> {
+                                ConstraintSet().apply {
+                                    clone(container)
+                                    setDimensionRatio(image.id, "16:10")
+                                    applyTo(container)
+                                }
+                            }
+                        }
                         if (media.size > 1 && media.size != 3) {
                             (frameContainer.layoutParams as GridLayoutManager.LayoutParams).marginEnd =
                                 margin ?: DEFAULT_MARGIN
@@ -107,27 +131,25 @@ class MediaRecyclerAdapter(
                             (frameContainer.layoutParams as GridLayoutManager.LayoutParams).bottomMargin =
                                 margin ?: DEFAULT_MARGIN
                         }
-                        if (media.size == 3) {
-                            ConstraintSet().apply {
-                                clone(container)
-                                setDimensionRatio(image.id, "16:5")
-                                applyTo(container)
-                            }
-                        } else if (media.size == 2) {
-                            ConstraintSet().apply {
-                                clone(container)
-                                setDimensionRatio(image.id, "8:10")
-                                applyTo(container)
-                            }
-                        } else {
-                            ConstraintSet().apply {
-                                clone(container)
-                                setDimensionRatio(image.id, "16:10")
-                                applyTo(container)
-                            }
-                        }
                     }
                     1 -> {
+                        when (media.size) {
+                            2 -> {
+                                ConstraintSet().apply {
+                                    clone(container)
+                                    setDimensionRatio(image.id, "8:11")
+                                    applyTo(container)
+                                }
+                            }
+                            else -> {
+                                ConstraintSet().apply {
+                                    clone(container)
+                                    setDimensionRatio(image.id, "16:10")
+                                    applyTo(container)
+                                }
+                            }
+                        }
+
                         if (media.size == 3) {
                             (frameContainer.layoutParams as GridLayoutManager.LayoutParams).marginEnd =
                                 margin ?: DEFAULT_MARGIN
@@ -143,20 +165,6 @@ class MediaRecyclerAdapter(
                         if (media.size == 2) {
                             (frameContainer.layoutParams as GridLayoutManager.LayoutParams).marginStart =
                                 margin ?: DEFAULT_MARGIN
-                        }
-
-                        if (media.size == 2) {
-                            ConstraintSet().apply {
-                                clone(container)
-                                setDimensionRatio(image.id, "8:10")
-                                applyTo(container)
-                            }
-                        } else {
-                            ConstraintSet().apply {
-                                clone(container)
-                                setDimensionRatio(image.id, "16:10")
-                                applyTo(container)
-                            }
                         }
                     }
                     2 -> {
