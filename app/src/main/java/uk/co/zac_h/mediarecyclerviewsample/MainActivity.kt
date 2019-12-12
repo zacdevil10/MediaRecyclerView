@@ -18,7 +18,7 @@ class MainActivity : AppCompatActivity() {
         val sampleMedia1Video = ArrayList<MediaModel>().apply {
             add(
                 MediaModel(
-                    "https://video.twimg.com/ext_tw_video/1191067166839377920/pu/vid/720x720/ZM-D2T294sE36Fmf.mp4?tag=10",
+                    "https://video.twimg.com/ext_tw_video/1142505846317826048/pu/vid/1280x720/3dW5rOYOJxDQIQmh.mp4?tag=10",
                     MediaType.VIDEO,
                     "https://pbs.twimg.com/ext_tw_video_thumb/1191067166839377920/pu/img/qIOjEwDj0_eEZvbT.jpg"
                 )
@@ -133,7 +133,7 @@ class MainActivity : AppCompatActivity() {
 
         val sampleMedia6 = ArrayList<MediaModel>()
 
-        media.add(SampleModel(1, sampleMedia1Video))
+        media.add(SampleModel(1, sampleMedia1Image))
         media.add(SampleModel(2, sampleMedia2))
         media.add(SampleModel(3, sampleMedia3))
         media.add(SampleModel(4, sampleMedia4))
@@ -142,7 +142,7 @@ class MainActivity : AppCompatActivity() {
 
         sample_recycler.apply {
             layoutManager = LinearLayoutManager(context)
-            adapter = SampleAdapter(context, media)
+            adapter = SampleAdapter(media)
         }
     }
 }
