@@ -7,7 +7,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import uk.co.zac_h.mediarecyclerview.ui.MediaRecyclerView
 
-class SampleAdapter(private val media: ArrayList<SampleModel>) :
+class SampleAdapter(private val activity: MainActivity, private val media: ArrayList<SampleModel>) :
     RecyclerView.Adapter<SampleAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
@@ -26,7 +26,7 @@ class SampleAdapter(private val media: ArrayList<SampleModel>) :
             textView.text = item.itemNumber.toString()
 
             recycler.apply {
-                configure(context, item.itemUrl)
+                configure(activity, context, item.itemUrl)
             }
         }
     }

@@ -142,7 +142,7 @@ class MainActivity : AppCompatActivity() {
 
         sample_recycler.apply {
             layoutManager = LinearLayoutManager(context)
-            adapter = SampleAdapter(media)
+            adapter = SampleAdapter(this@MainActivity, media)
         }
     }
 }

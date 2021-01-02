@@ -1,5 +1,6 @@
 package uk.co.zac_h.mediarecyclerview.ui
 
+import android.app.Activity
 import android.content.Context
 import android.util.AttributeSet
 import androidx.recyclerview.widget.GridLayoutManager
@@ -23,8 +24,8 @@ class MediaRecyclerView : RecyclerView {
         defStyle
     )
 
-    fun configure(context: Context?, media: ArrayList<MediaModel>) {
-        val mediaAdapter = MediaRecyclerAdapter.setMedia(media).setMargin(margin).build(context)
+    fun configure(activity: Activity, context: Context?, media: ArrayList<MediaModel>) {
+        val mediaAdapter = MediaRecyclerAdapter.setMedia(media).setMargin(margin).build(activity, context)
         layoutManager =
             GridLayoutManager(
                 context,

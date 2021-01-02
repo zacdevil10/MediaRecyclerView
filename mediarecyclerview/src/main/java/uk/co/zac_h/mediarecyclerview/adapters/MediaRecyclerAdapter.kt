@@ -1,5 +1,7 @@
 package uk.co.zac_h.mediarecyclerview.adapters
 
+import android.app.Activity
+import android.app.ActivityOptions
 import android.content.Context
 import android.content.Intent
 import android.view.LayoutInflater
@@ -21,6 +23,7 @@ import uk.co.zac_h.mediarecyclerview.utils.MediaType
 import kotlin.math.min
 
 class MediaRecyclerAdapter(
+    private val activity: Activity,
     private val context: Context?,
     private val media: ArrayList<MediaModel>
 ) :
@@ -42,8 +45,9 @@ class MediaRecyclerAdapter(
             return this
         }
 
-        fun build(context: Context?): MediaRecyclerAdapter {
+        fun build(activity: Activity, context: Context?): MediaRecyclerAdapter {
             return MediaRecyclerAdapter(
+                activity,
                 context,
                 media
             )
@@ -90,11 +94,15 @@ class MediaRecyclerAdapter(
         when (holder) {
             is ImageViewHolder -> holder.apply {
                 frameContainer.setOnClickListener {
+                    val options = ActivityOptions.makeSceneTransitionAnimation(activity, frameContainer, item.url)
                     context?.startActivity(Intent(context, PhotoView::class.java).apply {
                         putExtra("position", position)
+                        putExtra("transition", item.url)
                         putParcelableArrayListExtra("media", media)
-                    })
+                    }, options.toBundle())
                 }
+
+                frameContainer.transitionName = item.url
 
                 Picasso.get().load(item.url).into(image)
 

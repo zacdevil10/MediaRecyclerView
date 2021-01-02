@@ -2,9 +2,9 @@ package uk.co.zac_h.mediarecyclerview.ui
 
 import android.content.Context
 import android.util.AttributeSet
-import android.widget.ImageView
+import androidx.appcompat.widget.AppCompatImageView
 
-class ZoomableImageView : ImageView {
+class ZoomableImageView : AppCompatImageView {
 
     companion object {
         private const val NONE = 0
