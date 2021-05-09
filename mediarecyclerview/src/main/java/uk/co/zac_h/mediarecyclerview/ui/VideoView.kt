@@ -3,6 +3,7 @@ package uk.co.zac_h.mediarecyclerview.ui
 import android.net.Uri
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.source.MediaSource
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
@@ -86,9 +87,7 @@ class VideoView : AppCompatActivity() {
         }
     }
 
-    private fun buildMediaSource(uri: Uri): MediaSource {
-        val dataSourceFactory: DataSource.Factory =
-            DefaultDataSourceFactory(this, "MediaRecyclerView")
-        return ProgressiveMediaSource.Factory(dataSourceFactory).createMediaSource(uri)
-    }
+    private fun buildMediaSource(uri: Uri): MediaSource = ProgressiveMediaSource
+        .Factory(DefaultDataSourceFactory(this, "MediaRecyclerView"))
+        .createMediaSource(MediaItem.fromUri(uri))
 }
