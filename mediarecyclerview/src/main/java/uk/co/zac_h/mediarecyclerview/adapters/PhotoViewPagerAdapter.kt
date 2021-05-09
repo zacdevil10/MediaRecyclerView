@@ -6,15 +6,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.viewpager.widget.PagerAdapter
-import com.squareup.picasso.Picasso
+import com.bumptech.glide.Glide
 import uk.co.zac_h.mediarecyclerview.R
 import uk.co.zac_h.mediarecyclerview.models.MediaModel
 
 class PhotoViewPagerAdapter(
     private val context: Context,
     private val media: ArrayList<MediaModel>?
-) :
-    PagerAdapter() {
+) : PagerAdapter() {
 
     override fun instantiateItem(container: ViewGroup, position: Int): Any {
         val view =
@@ -23,7 +22,7 @@ class PhotoViewPagerAdapter(
         val imageView: ImageView = view.findViewById(R.id.zoomable_image_view)
 
         when (type) {
-            1 -> Picasso.get().load(getImageUrlAt(position)).into(imageView)
+            1 -> Glide.with(context).load(getImageUrlAt(position)).into(imageView)
             2 -> imageView.setImageResource(getImageResourceAt(position))
             else -> throw IllegalArgumentException("Invalid resource type: $type")
         }

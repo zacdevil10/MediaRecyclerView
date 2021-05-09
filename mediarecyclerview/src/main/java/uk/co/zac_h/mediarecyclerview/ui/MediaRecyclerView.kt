@@ -23,7 +23,7 @@ class MediaRecyclerView : RecyclerView {
         defStyle
     )
 
-    fun configure(context: Context?, media: ArrayList<MediaModel>) {
+    fun configure(context: Context, media: ArrayList<MediaModel>) {
         val mediaAdapter = MediaRecyclerAdapter.setMedia(media).setMargin(margin).build(context)
         layoutManager =
             GridLayoutManager(

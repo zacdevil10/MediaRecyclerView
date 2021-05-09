@@ -12,7 +12,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.squareup.picasso.Picasso
+import com.bumptech.glide.Glide
 import uk.co.zac_h.mediarecyclerview.R
 import uk.co.zac_h.mediarecyclerview.models.MediaModel
 import uk.co.zac_h.mediarecyclerview.ui.PhotoView
@@ -21,7 +21,7 @@ import uk.co.zac_h.mediarecyclerview.utils.MediaType
 import kotlin.math.min
 
 class MediaRecyclerAdapter(
-    private val context: Context?,
+    private val context: Context,
     private val media: ArrayList<MediaModel>
 ) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -42,11 +42,8 @@ class MediaRecyclerAdapter(
             return this
         }
 
-        fun build(context: Context?): MediaRecyclerAdapter {
-            return MediaRecyclerAdapter(
-                context,
-                media
-            )
+        fun build(context: Context): MediaRecyclerAdapter {
+            return MediaRecyclerAdapter(context, media)
         }
     }
 
@@ -96,7 +93,7 @@ class MediaRecyclerAdapter(
                     })
                 }
 
-                Picasso.get().load(item.url).into(image)
+                Glide.with(context).load(item.url).into(image)
 
                 when (position) {
                     0 -> {
@@ -200,11 +197,11 @@ class MediaRecyclerAdapter(
             }
             is VideoViewHolder -> holder.apply {
                 container.setOnClickListener {
-                    context?.startActivity(Intent(context, VideoView::class.java).apply {
+                    context.startActivity(Intent(context, VideoView::class.java).apply {
                         putExtra("media", item.url)
                     })
                 }
-                Picasso.get().load(item.static).into(videoStill)
+                Glide.with(context).load(item.static).into(videoStill)
             }
         }
     }
