@@ -9,31 +9,24 @@ import uk.co.zac_h.mediarecyclerview.models.MediaModel
 import kotlin.math.max
 import kotlin.math.min
 
-class MediaRecyclerView : RecyclerView {
+class MediaRecyclerView @JvmOverloads constructor(
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyle: Int = 0
+) : RecyclerView(context, attrs, defStyle) {
 
     private var margin: Int? = null
 
-    constructor(context: Context) : super(context)
-
-    constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
-
-    constructor(context: Context, attrs: AttributeSet, defStyle: Int) : super(
-        context,
-        attrs,
-        defStyle
-    )
-
     fun configure(context: Context, media: ArrayList<MediaModel>) {
         val mediaAdapter = MediaRecyclerAdapter.setMedia(media).setMargin(margin).build(context)
-        layoutManager =
-            GridLayoutManager(
-                context,
-                min(max(media.size, 1), 2),
-                GridLayoutManager.VERTICAL,
-                false
-            ).apply {
-                spanSizeLookup = mediaAdapter.spanSizeLookup
-            }
+        layoutManager = GridLayoutManager(
+            context,
+            min(max(media.size, 1), 2),
+            GridLayoutManager.VERTICAL,
+            false
+        ).apply {
+            spanSizeLookup = mediaAdapter.spanSizeLookup
+        }
         adapter = mediaAdapter
     }
 

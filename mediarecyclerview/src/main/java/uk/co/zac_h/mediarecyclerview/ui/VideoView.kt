@@ -3,17 +3,17 @@ package uk.co.zac_h.mediarecyclerview.ui
 import android.net.Uri
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.google.android.exoplayer2.ExoPlayerFactory
 import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.source.MediaSource
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.upstream.DataSource
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.util.Util
-import kotlinx.android.synthetic.main.activity_video_view.*
-import uk.co.zac_h.mediarecyclerview.R
+import uk.co.zac_h.mediarecyclerview.databinding.ActivityVideoViewBinding
 
 class VideoView : AppCompatActivity() {
+
+    private lateinit var binding: ActivityVideoViewBinding
 
     private var media: String? = null
 
@@ -24,7 +24,9 @@ class VideoView : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_video_view)
+
+        binding = ActivityVideoViewBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         media = intent.extras?.getString("media")
 
@@ -61,15 +63,16 @@ class VideoView : AppCompatActivity() {
     }
 
     private fun initPlayer() {
-        player = ExoPlayerFactory.newSimpleInstance(this)
-        video_view.player = player
+        player = SimpleExoPlayer.Builder(this).build()
+        binding.videoView.player = player
 
         val uri = Uri.parse(media)
         val mediaSource: MediaSource = buildMediaSource(uri)
 
         player?.apply {
             playWhenReady = this@VideoView.playWhenReady
-            prepare(mediaSource)
+            prepare()
+            setMediaSource(mediaSource)
             seekTo(playbackPosition)
         }
     }
