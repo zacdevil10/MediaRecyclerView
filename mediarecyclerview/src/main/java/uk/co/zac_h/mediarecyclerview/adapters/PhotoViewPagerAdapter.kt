@@ -4,34 +4,34 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
+import androidx.core.content.ContextCompat
 import androidx.viewpager.widget.PagerAdapter
-import com.squareup.picasso.Picasso
+import com.bumptech.glide.Glide
 import uk.co.zac_h.mediarecyclerview.R
+import uk.co.zac_h.mediarecyclerview.databinding.PhotoViewZoomableBinding
 import uk.co.zac_h.mediarecyclerview.models.MediaModel
+import uk.co.zac_h.mediarecyclerview.utils.MediaType
+import uk.co.zac_h.mediarecyclerview.utils.errorFromRes
 
 class PhotoViewPagerAdapter(
     private val context: Context,
-    private val media: ArrayList<MediaModel>?
-) :
-    PagerAdapter() {
+    private val media: ArrayList<MediaModel>
+) : PagerAdapter() {
 
-    override fun instantiateItem(container: ViewGroup, position: Int): Any {
-        val view =
-            LayoutInflater.from(context).inflate(R.layout.photo_view_zoomable, container, false)
+    override fun instantiateItem(container: ViewGroup, position: Int): Any =
+        with(PhotoViewZoomableBinding.inflate(LayoutInflater.from(context))) {
+            when (type[position]) {
+                MediaType.IMAGE_URL -> Glide.with(context).load(getImageUrlAt(position))
+                    .errorFromRes(context, R.drawable.ic_baseline_error_outline_24)
+                    .into(zoomableImageView)
+                MediaType.IMAGE_RES -> zoomableImageView.setImageResource(getImageResAt(position))
+                else -> throw IllegalArgumentException("Invalid resource type: $type")
+            }
 
-        val imageView: ImageView = view.findViewById(R.id.zoomable_image_view)
+            container.addView(root)
 
-        when (type) {
-            1 -> Picasso.get().load(getImageUrlAt(position)).into(imageView)
-            2 -> imageView.setImageResource(getImageResourceAt(position))
-            else -> throw IllegalArgumentException("Invalid resource type: $type")
+            root
         }
-
-        container.addView(view)
-
-        return view
-    }
 
     override fun destroyItem(container: ViewGroup, position: Int, `object`: Any) {
         container.removeView(`object` as View)
@@ -39,28 +39,23 @@ class PhotoViewPagerAdapter(
 
     override fun isViewFromObject(view: View, `object`: Any): Boolean = `object` == view
 
-    override fun getCount(): Int = media?.size ?: 0
+    override fun getCount(): Int = media.size
 
-    private fun getImageUrlAt(position: Int): String = media?.get(position)?.url as String
+    private fun getImageUrlAt(position: Int): String = media[position].url as String
 
-    private fun getImageResourceAt(position: Int): Int = media?.get(position) as Int
+    private fun getImageResAt(position: Int): Int =
+        media[position].res ?: R.drawable.ic_baseline_error_outline_24
 
     companion object Builder {
-        const val URL = 1
-        const val RES = 2
+        lateinit var type: List<MediaType>
 
-        private var type: Int = 0
-
-        fun setImageType(mediaType: Int): Builder {
+        fun setImageType(mediaType: List<MediaType>): Builder {
             type = mediaType
             return this
         }
 
-        fun build(context: Context, media: java.util.ArrayList<MediaModel>?): PagerAdapter =
-            PhotoViewPagerAdapter(
-                context,
-                media
-            )
+        fun build(context: Context, media: ArrayList<MediaModel>): PagerAdapter =
+            PhotoViewPagerAdapter(context, media)
     }
 
 }

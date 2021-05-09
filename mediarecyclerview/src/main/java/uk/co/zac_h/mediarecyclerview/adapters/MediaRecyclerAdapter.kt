@@ -5,82 +5,69 @@ import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
-import android.widget.ImageView
-import android.widget.TextView
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.squareup.picasso.Picasso
+import com.bumptech.glide.Glide
 import uk.co.zac_h.mediarecyclerview.R
+import uk.co.zac_h.mediarecyclerview.databinding.ListItemImageBinding
+import uk.co.zac_h.mediarecyclerview.databinding.ListItemVideoBinding
 import uk.co.zac_h.mediarecyclerview.models.MediaModel
 import uk.co.zac_h.mediarecyclerview.ui.PhotoView
 import uk.co.zac_h.mediarecyclerview.ui.VideoView
 import uk.co.zac_h.mediarecyclerview.utils.MediaType
+import uk.co.zac_h.mediarecyclerview.utils.setup
 import kotlin.math.min
 
 class MediaRecyclerAdapter(
-    private val context: Context?,
+    private val context: Context,
     private val media: ArrayList<MediaModel>
-) :
-    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     companion object Builder {
         private const val DEFAULT_MARGIN = 4
 
         private lateinit var media: ArrayList<MediaModel>
-        private var margin: Int? = null
+        private var margin: Int = DEFAULT_MARGIN
 
         fun setMargin(margin: Int?): Builder {
-            Builder.margin = margin
+            this.margin = margin ?: DEFAULT_MARGIN
             return this
         }
 
         fun setMedia(media: ArrayList<MediaModel>): Builder {
-            Builder.media = media
+            this.media = media
             return this
         }
 
-        fun build(context: Context?): MediaRecyclerAdapter {
-            return MediaRecyclerAdapter(
-                context,
-                media
-            )
-        }
+        fun build(context: Context) = MediaRecyclerAdapter(context, media)
     }
 
     val spanSizeLookup: GridLayoutManager.SpanSizeLookup by lazy {
         object : GridLayoutManager.SpanSizeLookup() {
-            override fun getSpanSize(position: Int): Int {
-                return when (position) {
-                    0 -> if (media.size == 3) 2 else 1
-                    else -> 1
-                }
+            override fun getSpanSize(position: Int) = when (position) {
+                0 -> if (media.size == 3) 2 else 1
+                else -> 1
             }
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
         when (viewType) {
-            MediaType.IMAGE -> {
-                ImageViewHolder(
-                    LayoutInflater.from(parent.context).inflate(
-                        R.layout.list_item_image,
-                        parent,
-                        false
-                    )
+            R.layout.list_item_image -> ImageViewHolder(
+                ListItemImageBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false
                 )
-            }
-            MediaType.VIDEO -> {
-                VideoViewHolder(
-                    LayoutInflater.from(parent.context).inflate(
-                        R.layout.list_item_video,
-                        parent,
-                        false
-                    )
+            )
+            R.layout.list_item_video -> VideoViewHolder(
+                ListItemVideoBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false
                 )
-            }
+            )
             else -> throw IllegalArgumentException("Invalid view type in MediaRecyclerAdapter")
         }
 
@@ -89,146 +76,99 @@ class MediaRecyclerAdapter(
 
         when (holder) {
             is ImageViewHolder -> holder.apply {
-                frameContainer.setOnClickListener {
-                    context?.startActivity(Intent(context, PhotoView::class.java).apply {
-                        putExtra("position", position)
-                        putParcelableArrayListExtra("media", media)
-                    })
-                }
-
-                Picasso.get().load(item.url).into(image)
-
-                when (position) {
-                    0 -> {
-                        when (media.size) {
-                            3 -> {
-                                ConstraintSet().apply {
-                                    clone(container)
-                                    setDimensionRatio(image.id, "16:5")
-                                    applyTo(container)
-                                }
-                            }
-                            2 -> {
-                                ConstraintSet().apply {
-                                    clone(container)
-                                    setDimensionRatio(image.id, "8:11")
-                                    applyTo(container)
-                                }
-                            }
-                            else -> {
-                                ConstraintSet().apply {
-                                    clone(container)
-                                    setDimensionRatio(image.id, "16:10")
-                                    applyTo(container)
-                                }
-                            }
-                        }
-                        if (media.size > 1 && media.size != 3) {
-                            (frameContainer.layoutParams as GridLayoutManager.LayoutParams).marginEnd =
-                                margin ?: DEFAULT_MARGIN
-                        }
-                        if (media.size >= 3) {
-                            (frameContainer.layoutParams as GridLayoutManager.LayoutParams).bottomMargin =
-                                margin ?: DEFAULT_MARGIN
-                        }
+                with(binding) {
+                    frameContainer.setOnClickListener {
+                        context.startActivity(Intent(context, PhotoView::class.java).apply {
+                            putExtra("position", position)
+                            putParcelableArrayListExtra("media", media)
+                        })
                     }
-                    1 -> {
-                        when (media.size) {
-                            2 -> {
-                                ConstraintSet().apply {
-                                    clone(container)
-                                    setDimensionRatio(image.id, "8:11")
-                                    applyTo(container)
+
+                    val frameContainerLayoutParams =
+                        frameContainer.layoutParams as GridLayoutManager.LayoutParams
+
+                    Glide.with(context).load(item.url).into(mediaImage)
+
+                    when (position) {
+                        0 -> {
+                            when (media.size) {
+                                3 -> ConstraintSet().setup(mediaContainer, mediaImage, "16:5")
+                                2 -> ConstraintSet().setup(mediaContainer, mediaImage, "8:11")
+                                else -> ConstraintSet().setup(mediaContainer, mediaImage, "16:10")
+                            }
+                            frameContainerLayoutParams.apply {
+                                if (media.size > 1 && media.size != 3) marginEnd = margin
+                                if (media.size >= 3) bottomMargin = margin
+                            }
+                        }
+                        1 -> {
+                            when (media.size) {
+                                2 -> ConstraintSet().setup(mediaContainer, mediaImage, "8:11")
+                                else -> ConstraintSet().setup(mediaContainer, mediaImage, "16:10")
+                            }
+
+                            frameContainerLayoutParams.apply {
+                                if (media.size == 3) {
+                                    marginEnd = margin
+                                    topMargin = margin
+                                }
+                                if (media.size >= 4) {
+                                    marginStart = margin
+                                    bottomMargin = margin
+
+                                }
+                                if (media.size == 2) marginStart = margin
+                            }
+                        }
+                        2 -> {
+                            frameContainerLayoutParams.apply {
+                                if (media.size == 3) {
+                                    marginStart = margin
+                                    topMargin = margin
+                                }
+                                if (media.size >= 4) {
+                                    marginEnd = margin
+                                    topMargin = margin
                                 }
                             }
-                            else -> {
-                                ConstraintSet().apply {
-                                    clone(container)
-                                    setDimensionRatio(image.id, "16:10")
-                                    applyTo(container)
+                        }
+                        3 -> {
+                            if (media.size > 3) {
+                                frameContainerLayoutParams.apply {
+                                    marginStart = margin
+                                    topMargin = margin
                                 }
                             }
-                        }
-
-                        if (media.size == 3) {
-                            (frameContainer.layoutParams as GridLayoutManager.LayoutParams).marginEnd =
-                                margin ?: DEFAULT_MARGIN
-                            (frameContainer.layoutParams as GridLayoutManager.LayoutParams).topMargin =
-                                margin ?: DEFAULT_MARGIN
-                        }
-                        if (media.size >= 4) {
-                            (frameContainer.layoutParams as GridLayoutManager.LayoutParams).marginStart =
-                                margin ?: DEFAULT_MARGIN
-                            (frameContainer.layoutParams as GridLayoutManager.LayoutParams).bottomMargin =
-                                margin ?: DEFAULT_MARGIN
-                        }
-                        if (media.size == 2) {
-                            (frameContainer.layoutParams as GridLayoutManager.LayoutParams).marginStart =
-                                margin ?: DEFAULT_MARGIN
-                        }
-                    }
-                    2 -> {
-                        if (media.size == 3) {
-                            (frameContainer.layoutParams as GridLayoutManager.LayoutParams).marginStart =
-                                margin ?: DEFAULT_MARGIN
-                            (frameContainer.layoutParams as GridLayoutManager.LayoutParams).topMargin =
-                                margin ?: DEFAULT_MARGIN
-                        }
-                        if (media.size >= 4) {
-                            (frameContainer.layoutParams as GridLayoutManager.LayoutParams).marginEnd =
-                                margin ?: DEFAULT_MARGIN
-                            (frameContainer.layoutParams as GridLayoutManager.LayoutParams).topMargin =
-                                margin ?: DEFAULT_MARGIN
-                        }
-                    }
-                    3 -> {
-                        if (media.size > 3) {
-
-                            (frameContainer.layoutParams as GridLayoutManager.LayoutParams).marginStart =
-                                margin ?: DEFAULT_MARGIN
-                            (frameContainer.layoutParams as GridLayoutManager.LayoutParams).topMargin =
-                                margin ?: DEFAULT_MARGIN
-                        }
-                        if (media.size > 4) {
-                            countContainer.visibility = View.VISIBLE
-                            countText.text = "+${media.size - 3}"
-                        } else {
-                            countContainer.visibility = View.GONE
+                            if (media.size > 4) {
+                                mediaCountContainer.visibility = View.VISIBLE
+                                extraCount.text =
+                                    context.getString(R.string.extra_count, media.size - 3)
+                            } else {
+                                mediaCountContainer.visibility = View.GONE
+                            }
                         }
                     }
                 }
             }
             is VideoViewHolder -> holder.apply {
-                container.setOnClickListener {
-                    context?.startActivity(Intent(context, VideoView::class.java).apply {
+                binding.videoContainer.setOnClickListener {
+                    context.startActivity(Intent(context, VideoView::class.java).apply {
                         putExtra("media", item.url)
                     })
                 }
-                Picasso.get().load(item.static).into(videoStill)
+                Glide.with(context).load(item.static).into(binding.videoStillImage)
             }
         }
     }
 
     override fun getItemCount(): Int = min(media.size, 4)
 
-    override fun getItemViewType(position: Int): Int =
-        when (media[position].type) {
-            MediaType.IMAGE -> 0
-            MediaType.VIDEO -> 1
-            else -> throw IllegalArgumentException("Unexpected media type found.")
-        }
-
-    class ImageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val frameContainer: FrameLayout = itemView.findViewById(R.id.frame_container)
-        val container: ConstraintLayout = itemView.findViewById(R.id.media_container)
-        val image: ImageView = itemView.findViewById(R.id.media_image)
-
-        val countContainer: FrameLayout = itemView.findViewById(R.id.media_count_container)
-        val countText: TextView = itemView.findViewById(R.id.extra_count)
+    override fun getItemViewType(position: Int): Int = when (media[position].type) {
+        MediaType.IMAGE_URL, MediaType.IMAGE_RES -> R.layout.list_item_image
+        MediaType.VIDEO -> R.layout.list_item_video
     }
 
-    class VideoViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val container: FrameLayout = itemView.findViewById(R.id.video_container)
-        val videoStill: ImageView = itemView.findViewById(R.id.video_still_image)
-    }
+    class ImageViewHolder(val binding: ListItemImageBinding) : RecyclerView.ViewHolder(binding.root)
+
+    class VideoViewHolder(val binding: ListItemVideoBinding) : RecyclerView.ViewHolder(binding.root)
 }
